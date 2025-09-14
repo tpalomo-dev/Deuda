@@ -29,7 +29,10 @@ def pago(fecha,
     Deudauf = deuda_uf
     Deudadol_sin_interes = deuda_dol_sin_interes
     Deudadol_con_interes = deuda_dol_con_interes
-    penultimo_pago = datetime.datetime.strptime(fecha, "%d-%m-%Y").date()
+    if isinstance(fecha, str):
+        penultimo_pago = datetime.datetime.strptime(fecha, "%d-%m-%Y").date()
+    else:
+        penultimo_pago = fecha.date()  # already datetime
     ultimo_pago = datetime.date.today()
     ultimo_pago_formato = datetime.date.today().strftime('%d-%m-%Y')
     
