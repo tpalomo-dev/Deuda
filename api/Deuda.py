@@ -26,9 +26,9 @@ def pago(fecha,
     
     interes_anual = 0.04
     interes_anual_dolares = 0.0412
-    Deudauf = deuda_uf
-    Deudadol_sin_interes = deuda_dol_sin_interes
-    Deudadol_con_interes = deuda_dol_con_interes
+    Deudauf = float(deuda_uf)
+    Deudadol_sin_interes = float(deuda_dol_sin_interes)
+    Deudadol_con_interes = float(deuda_dol_con_interes)
     if isinstance(fecha, str):
         penultimo_pago = datetime.datetime.strptime(fecha, "%d-%m-%Y").date()
     else:

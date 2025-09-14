@@ -40,17 +40,18 @@ async def telegram_webhook(req: Request):
                     values[0]
                 )
                 if row:
+                    logger.error(f"{row[0]} {type(row[0])} {row[1]} {type(row[1])} {row[3]} {type(row[3])}")
                     ultimo_pago_formato, nueva_deuda_uf, nueva_deuda_usd_sin_interes, nueva_deuda_usd_con_interes, string = pago(
                         row[3],
                         row,
-                        row[0],
-                        row[1],
-                        row[2],
-                        values[1],
-                        values[2],
-                        values[3]
+                        float(row[0]),
+                        float(row[1]),
+                        float(row[2]),
+                        float(values[1]),
+                        float(values[2]),
+                        float(values[3])
                     )
-                    
+
                     # Insert new row
                     await conn.execute(
                         """
