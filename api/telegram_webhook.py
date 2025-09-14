@@ -7,6 +7,7 @@ import asyncpg
 sys.path.append(os.path.dirname(__file__))
 from Deuda import pago
 import datetime
+import aiohttp
 
 app = FastAPI()
 
@@ -35,7 +36,7 @@ async def telegram_webhook(req: Request):
             try:
                 row = await conn.fetchrow(
                     "SELECT deuda_uf, deuda_dolares_sin_interes, deuda_dolares_con_interes, fecha_ultimo_pago "
-                    "FROM deudas WHERE deudor = $1 ORDER BY fecha DESC LIMIT 1",
+                    "FROM deudas WHERE deudor = $1 ORDER BY fecha_ultimo_pago DESC LIMIT 1",
                     values[0]
                 )
                 if row:
@@ -62,6 +63,14 @@ async def telegram_webhook(req: Request):
                         nueva_deuda_usd_sin_interes,   # deuda_dolares_sin_interes
                         nueva_deuda_usd_con_interes    # deuda_dolares_con_interes
                     )
+                    
+                    async with aiohttp.ClientSession() as session:
+                        response = await session.post(
+                            f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage",
+                            json={"chat_id": message["chat"]["id"], "text": string},
+                        )
+                        if response.status != 200:
+                            logger.error(f"Failed to send Telegram message: {response.status}")
                     
                     return JSONResponse({"status": "success", "message": string})
                 
