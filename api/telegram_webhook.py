@@ -55,10 +55,10 @@ async def telegram_webhook(req: Request):
                     # Insert new row
                     await conn.execute(
                         """
-                        INSERT INTO deudas (fecha, deudor, deuda_uf, deuda_dolares_sin_interes, deuda_dolares_con_interes)
+                        INSERT INTO deudas (fecha_ultimo_pago, deudor, deuda_uf, deuda_dolares_sin_interes, deuda_dolares_con_interes)
                         VALUES ($1, $2, $3, $4, $5)
                         """,
-                        datetime.datetime.now(),  # fecha
+                        datetime.datetime.now(),  # fecha_ultimo_pago
                         values[0],                # deudor
                         nueva_deuda_uf,           # deuda_uf
                         nueva_deuda_usd_sin_interes,   # deuda_dolares_sin_interes
@@ -68,8 +68,7 @@ async def telegram_webhook(req: Request):
                     async with aiohttp.ClientSession() as session:
                         response = await session.post(
                             f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage",
-                            json={"chat_id": message["chat"]["id"], "text": string},
-                        )
+                            json={"chat_id": message["chat"]["id"], "text": "".join([word for word in string])})
                         if response.status != 200:
                             logger.error(f"Failed to send Telegram message: {response.status}")
                     
