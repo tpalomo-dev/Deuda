@@ -34,7 +34,7 @@ async def telegram_webhook(req: Request):
             conn = await asyncpg.connect(DATABASE_URL)
             try:
                 row = await conn.fetchrow(
-                    "SELECT deuda_uf, deuda_dolares_sin_interes, deuda_dolares_con_interes, fecha "
+                    "SELECT deuda_uf, deuda_dolares_sin_interes, deuda_dolares_con_interes, fecha_ultimo_pago "
                     "FROM deudas WHERE deudor = $1 ORDER BY fecha DESC LIMIT 1",
                     values[0]
                 )
