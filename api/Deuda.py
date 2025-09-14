@@ -40,9 +40,9 @@ def pago(fecha,
     
     dif_en_dias = dif_en_dias.days
     
-    cuota_en_pesos = (pago_uf)
-    cuota_en_dolares_sin = (pago_usd_sin_interes)
-    cuota_en_dolares_con = (pago_usd_con_interes)
+    cuota_en_pesos = float(pago_uf)
+    cuota_en_dolares_sin = float(pago_usd_sin_interes)
+    cuota_en_dolares_con = float(pago_usd_con_interes)
     
     ##calculo de uf
     Cla = Mindicador('uf',datetime.date.today().strftime('%d-%m-%Y'))
