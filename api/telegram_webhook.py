@@ -32,7 +32,17 @@ async def telegram_webhook(req: Request):
 
         if message.get("text"):
             values = message["text"].split()
+            if len(values)!=4:
+                async with aiohttp.ClientSession() as session:
+                    response = await session.post(
+                        f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage",
+                        json={"chat_id": message["chat"]["id"], 
+                              "text": f"Message should be Name, CLP, USD+, USD-, and it has {len(values)} lenght"}
+                        )
+                return JSONResponse({"status": "success", "message": "Message should be Name, CLP, USD+, USD-, and it has {len(values)} lenght"})
+            
             conn = await asyncpg.connect(DATABASE_URL)
+            
             try:
                 row = await conn.fetchrow(
                     "SELECT deuda_uf, deuda_dolares_sin_interes, deuda_dolares_con_interes, fecha_ultimo_pago "
@@ -52,7 +62,6 @@ async def telegram_webhook(req: Request):
                         float(values[3])
                     )
 
-                    # Insert new row
                     await conn.execute(
                         """
                         INSERT INTO deudas (fecha_ultimo_pago, deudor, deuda_uf, deuda_dolares_sin_interes, deuda_dolares_con_interes)
