@@ -7,6 +7,7 @@ import asyncpg
 sys.path.append(os.path.dirname(__file__))
 from Deuda import pago
 import datetime
+import zoneinfo
 import aiohttp
 
 app = FastAPI()
@@ -61,13 +62,14 @@ async def telegram_webhook(req: Request):
                         float(values[2]),
                         float(values[3])
                     )
-
+                    tz = zoneinfo.ZoneInfo("America/Santiago")
+                    now = datetime.now(tz).replace(tzinfo=None)  # naive, Chilean local time
                     await conn.execute(
                         """
                         INSERT INTO deudas (fecha_ultimo_pago, deudor, deuda_uf, deuda_dolares_sin_interes, deuda_dolares_con_interes)
                         VALUES ($1, $2, $3, $4, $5)
                         """,
-                        datetime.datetime.now(),  # fecha_ultimo_pago
+                        now,  # fecha_ultimo_pago
                         values[0],                # deudor
                         nueva_deuda_uf,           # deuda_uf
                         nueva_deuda_usd_sin_interes,   # deuda_dolares_sin_interes
