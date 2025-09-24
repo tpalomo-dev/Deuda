@@ -63,7 +63,7 @@ async def telegram_webhook(req: Request):
                         float(values[3])
                     )
                     tz = zoneinfo.ZoneInfo("America/Santiago")
-                    now = datetime.now(tz).replace(tzinfo=None)  # naive, Chilean local time
+                    now = datetime.datetime.now(tz).replace(tzinfo=None)  # naive, Chilean local time
                     await conn.execute(
                         """
                         INSERT INTO deudas (fecha_ultimo_pago, deudor, deuda_uf, deuda_dolares_sin_interes, deuda_dolares_con_interes)
